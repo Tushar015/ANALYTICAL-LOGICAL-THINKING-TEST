@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALT-60 | Mind.exe — Analytical Thinking Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #030712;
+  --void2: #080f1e;
+  --void3: #0d1829;
+  --cyan: #00f0ff;
+  --cyan-dim: rgba(0,240,255,0.15);
+  --magenta: #ff0080;
+  --magenta-dim: rgba(255,0,128,0.15);
+  --lime: #adff2f;
+  --lime-dim: rgba(173,255,47,0.12);
+  --purple: #a855f7;
+  --purple-dim: rgba(168,85,247,0.15);
+  --amber: #ffb703;
+  --white: #f0f8ff;
+  --glass: rgba(255,255,255,0.03);
+  --glass-border: rgba(255,255,255,0.08);
+  --text-muted: rgba(240,248,255,0.45);
+  --text-dim: rgba(240,248,255,0.25);
+  --glow-cyan: 0 0 20px rgba(0,240,255,0.4), 0 0 60px rgba(0,240,255,0.15);
+  --glow-magenta: 0 0 20px rgba(255,0,128,0.4), 0 0 60px rgba(255,0,128,0.15);
+  --glow-lime: 0 0 20px rgba(173,255,47,0.4), 0 0 60px rgba(173,255,47,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--void);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── CUSTOM CURSOR ──────────────────── */
+#cursor-dot {
+  position: fixed; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--cyan); pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%); transition: transform .1s;
+  box-shadow: var(--glow-cyan);
+}
+#cursor-ring {
+  position: fixed; width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid rgba(0,240,255,0.4); pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%); transition: all .15s ease;
+}
+
+/* ─── NOISE OVERLAY ──────────────────── */
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  opacity: .025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* ─── GRID BACKGROUND ────────────────── */
+.grid-bg {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+/* ─── SCANLINES ──────────────────────── */
+.scanlines {
+  position: fixed; inset: 0; pointer-events: none; z-index: 2;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+}
+
+/* ─── NAV ────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5vw; height: 60px;
+  background: rgba(3,7,18,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,240,255,0.1);
+}
+.nav-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem; font-weight: 900;
+  color: var(--cyan);
+  letter-spacing: .15em;
+  text-shadow: var(--glow-cyan);
+}
+.nav-logo span { color: rgba(255,255,255,0.4); font-weight: 400; }
+.nav-links { display: flex; gap: 2rem; }
+.nav-links a {
+  font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-muted); text-decoration: none;
+  transition: color .2s, text-shadow .2s;
+  font-family: 'JetBrains Mono', monospace;
+}
+.nav-links a:hover { color: var(--cyan); text-shadow: var(--glow-cyan); }
+.nav-cta {
+  font-family: 'Orbitron', monospace;
+  font-size: .65rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--void); background: var(--cyan);
+  padding: .45rem 1.1rem; border-radius: 2px;
+  transition: all .2s; position: relative; overflow: hidden;
+}
+.nav-cta::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+  transform: translateX(-100%); transition: transform .4s;
+}
+.nav-cta:hover::before { transform: translateX(100%); }
+.nav-cta:hover { box-shadow: var(--glow-cyan); }
+
+/* ─── HERO ───────────────────────────── */
+#home {
+  min-height: 100vh; position: relative; z-index: 10;
+  display: flex; align-items: center; justify-content: center;
+  padding: 80px 5vw 60px; overflow: hidden;
+}
+.hero-orb {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  filter: blur(80px); animation: orbFloat 8s ease-in-out infinite;
+}
+.hero-orb-1 { width: 500px; height: 500px; background: rgba(0,240,255,0.08); top: -100px; right: -100px; }
+.hero-orb-2 { width: 400px; height: 400px; background: rgba(255,0,128,0.06); bottom: -100px; left: -50px; animation-delay: -4s; }
+.hero-orb-3 { width: 300px; height: 300px; background: rgba(168,85,247,0.07); top: 50%; left: 50%; animation-delay: -2s; }
+
+@keyframes orbFloat {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33% { transform: translate(20px,-20px) scale(1.05); }
+  66% { transform: translate(-15px,15px) scale(.95); }
+}
+
+.hero-inner { max-width: 1200px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: .6rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--cyan); border: 1px solid rgba(0,240,255,0.3);
+  background: rgba(0,240,255,0.06); padding: .4rem 1rem; border-radius: 2px;
+  margin-bottom: 1.5rem; animation: fadeUp .5s both;
+}
+.hero-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: blink 1.2s infinite; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+.hero-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 900; line-height: 1.1;
+  color: var(--white);
+  animation: fadeUp .6s .1s both;
+}
+.hero-title .glitch {
+  display: block;
+  color: var(--cyan);
+  text-shadow: var(--glow-cyan);
+  position: relative;
+  animation: glitchText 4s infinite;
+}
+@keyframes glitchText {
+  0%,90%,100% { text-shadow: var(--glow-cyan); transform: none; clip-path: none; }
+  92% { text-shadow: 2px 0 var(--magenta), -2px 0 var(--lime); transform: skewX(-1deg); }
+  94% { text-shadow: -2px 0 var(--magenta), 2px 0 var(--lime); transform: skewX(1deg); }
+  96% { text-shadow: var(--glow-cyan); transform: none; }
+}
+
+.hero-sub {
+  color: var(--text-muted); font-size: .95rem; line-height: 1.8; max-width: 460px;
+  margin-top: 1.2rem; animation: fadeUp .6s .2s both;
+}
+
+.hero-actions { display: flex; gap: 1rem; margin-top: 2rem; animation: fadeUp .6s .3s both; }
+.btn-neon {
+  font-family: 'Orbitron', monospace; font-size: .7rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; text-decoration: none;
+  padding: .85rem 2rem; border-radius: 2px; cursor: pointer; border: none;
+  position: relative; overflow: hidden; display: inline-block;
+  transition: all .2s;
+}
+.btn-neon-cyan {
+  background: var(--cyan); color: var(--void);
+}
+.btn-neon-cyan:hover { box-shadow: var(--glow-cyan), inset 0 0 20px rgba(255,255,255,0.2); transform: translateY(-2px); }
+.btn-neon-outline {
+  background: transparent; color: var(--cyan);
+  border: 1px solid rgba(0,240,255,0.4);
+}
+.btn-neon-outline:hover { background: rgba(0,240,255,0.08); box-shadow: var(--glow-cyan); transform: translateY(-2px); }
+
+.hero-stats { display: flex; gap: 2rem; margin-top: 2.5rem; animation: fadeUp .6s .4s both; }
+.h-stat { text-align: center; }
+.h-stat .val {
+  font-family: 'Orbitron', monospace; font-size: 2rem; font-weight: 900;
+  color: var(--cyan); text-shadow: var(--glow-cyan); line-height: 1;
+}
+.h-stat .lbl { font-size: .65rem; color: var(--text-dim); letter-spacing: .1em; text-transform: uppercase; margin-top: .3rem; font-family: 'JetBrains Mono', monospace; }
+.h-stat-divider { width: 1px; background: rgba(0,240,255,0.15); align-self: stretch; }
+
+/* hero right — attribute terminal */
+.hero-terminal {
+  background: rgba(3,7,18,0.8);
+  border: 1px solid rgba(0,240,255,0.2);
+  border-radius: 8px; overflow: hidden;
+  box-shadow: var(--glow-cyan), inset 0 1px 0 rgba(255,255,255,0.05);
+  animation: fadeUp .6s .2s both;
+}
+.terminal-bar {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .75rem 1rem; background: rgba(0,240,255,0.04);
+  border-bottom: 1px solid rgba(0,240,255,0.1);
+}
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-body { padding: 1.5rem; }
+.t-line {
+  font-family: 'JetBrains Mono', monospace; font-size: .78rem;
+  margin-bottom: .9rem; display: flex; align-items: flex-start; gap: .75rem;
+  opacity: 0; animation: typeIn .3s forwards;
+}
+.t-line:nth-child(1) { animation-delay: .8s; }
+.t-line:nth-child(2) { animation-delay: 1.2s; }
+.t-line:nth-child(3) { animation-delay: 1.6s; }
+.t-line:nth-child(4) { animation-delay: 2s; }
+.t-line:nth-child(5) { animation-delay: 2.4s; }
+@keyframes typeIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+.t-prompt { color: var(--cyan); flex-shrink: 0; }
+.t-cmd { color: rgba(255,255,255,0.7); }
+.t-out { color: var(--lime); }
+.attr-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .7rem .9rem; border-radius: 4px; margin-bottom: .5rem;
+  border: 1px solid; transition: all .3s; cursor: default;
+}
+.attr-row:hover { transform: translateX(4px); }
+.attr-row .label { font-size: .82rem; font-weight: 600; }
+.attr-row .qs { font-family: 'JetBrains Mono', monospace; font-size: .7rem; opacity: .6; }
+.attr-row .bar-mini { height: 3px; border-radius: 2px; margin-top: .35rem; width: 100%; }
+
+/* ─── SECTION SHARED ─────────────────── */
+.section-wrap { position: relative; z-index: 10; padding: 100px 5vw; }
+.s-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem; letter-spacing: .15em; text-transform: uppercase;
+  margin-bottom: .75rem;
+}
+.s-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900;
+  line-height: 1.15;
+}
+.max-w { max-width: 1200px; margin: 0 auto; }
+
+/* ─── ABOUT ──────────────────────────── */
+#about { background: var(--void2); }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; margin-top: 3rem; }
+.about-p { color: var(--text-muted); line-height: 1.85; font-size: .9rem; margin-bottom: 1rem; }
+.theory-chips { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+.chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem; letter-spacing: .06em; padding: .35rem .85rem; border-radius: 2px;
+  border: 1px solid rgba(0,240,255,0.25); color: var(--cyan);
+  background: rgba(0,240,255,0.05); transition: all .2s;
+}
+.chip:hover { background: rgba(0,240,255,0.12); box-shadow: var(--glow-cyan); }
+.about-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.about-card {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 6px; padding: 1.4rem;
+  transition: all .3s; position: relative; overflow: hidden;
+}
+.about-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0; transition: opacity .3s;
+}
+.about-card:hover::before { opacity: 1; }
+.about-card:hover { border-color: rgba(0,240,255,0.2); background: rgba(0,240,255,0.04); transform: translateY(-4px); }
+.about-card .ico { font-size: 1.6rem; margin-bottom: .75rem; }
+.about-card h4 { font-size: .85rem; font-weight: 700; color: var(--white); margin-bottom: .4rem; letter-spacing: .03em; }
+.about-card p { font-size: .78rem; color: var(--text-muted); line-height: 1.65; }
+
+/* ─── ATTRIBUTES ─────────────────────── */
+#attributes { background: var(--void); }
+.attrs-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.2rem; margin-top: 3rem; }
+.attr-card {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 8px; padding: 1.8rem;
+  position: relative; overflow: hidden; transition: all .3s;
+}
+.attr-card::after {
+  content: ''; position: absolute; inset: 0; border-radius: 8px;
+  background: radial-gradient(circle at 50% 0%, var(--c-dim), transparent 70%);
+  opacity: 0; transition: opacity .3s;
+}
+.attr-card:hover::after { opacity: 1; }
+.attr-card:hover { transform: translateY(-8px); border-color: var(--c); box-shadow: 0 0 30px var(--c-dim); }
+.attr-num {
+  font-family: 'Orbitron', monospace; font-size: 3.5rem; font-weight: 900;
+  color: var(--c-dim); line-height: 1; position: absolute; right: 1rem; top: .5rem;
+  filter: blur(.5px); letter-spacing: -.05em;
+}
+.attr-badge {
+  display: inline-block; font-family: 'JetBrains Mono', monospace;
+  font-size: .62rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--c); background: var(--c-dim); border: 1px solid var(--c);
+  padding: .25rem .65rem; border-radius: 2px; margin-bottom: 1rem;
+}
+.attr-card h3 { font-size: .95rem; font-weight: 700; color: var(--white); margin-bottom: .6rem; letter-spacing: .02em; }
+.attr-card p { font-size: .78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.2rem; }
+.skill-list { list-style: none; }
+.skill-list li {
+  font-size: .74rem; color: rgba(240,248,255,0.4); padding: .28rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex; align-items: center; gap: .5rem;
+  transition: color .2s;
+}
+.attr-card:hover .skill-list li { color: rgba(240,248,255,0.6); }
+.skill-list li::before { content: '//'; font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--c); opacity: .6; }
+.skill-list li:last-child { border-bottom: none; }
+
+/* ─── STEPS ──────────────────────────── */
+#how { background: var(--void2); }
+.steps-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; margin-top: 3rem; background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; }
+.step-card {
+  background: var(--void2); padding: 2rem 1.5rem;
+  position: relative; overflow: hidden; transition: background .3s;
+}
+.step-card:hover { background: rgba(0,240,255,0.04); }
+.step-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  transform: scaleX(0); transform-origin: left; transition: transform .4s;
+}
+.step-card:hover::before { transform: scaleX(1); }
+.step-n {
+  font-family: 'Orbitron', monospace; font-size: .68rem; font-weight: 700;
+  color: var(--cyan); letter-spacing: .15em; text-transform: uppercase;
+  margin-bottom: 1rem; font-size: .65rem;
+}
+.step-ico { font-size: 2rem; margin-bottom: 1rem; display: block; }
+.step-card h4 { font-size: .9rem; font-weight: 700; color: var(--white); margin-bottom: .5rem; }
+.step-card p { font-size: .78rem; color: var(--text-muted); line-height: 1.6; }
+
+/* ─── TEST ───────────────────────────── */
+#test { background: var(--void); }
+#test-wrap { max-width: 860px; margin: 3rem auto 0; }
+
+/* landing */
+#test-landing { text-align: center; padding: 3rem 1rem; }
+.meta-grid { display: flex; justify-content: center; gap: 1px; margin: 2.5rem 0; background: rgba(0,240,255,0.1); border-radius: 6px; overflow: hidden; border: 1px solid rgba(0,240,255,0.15); }
+.meta-box {
+  flex: 1; padding: 1.5rem; background: var(--void2); text-align: center;
+  transition: background .2s;
+}
+.meta-box:hover { background: rgba(0,240,255,0.04); }
+.meta-val {
+  font-family: 'Orbitron', monospace; font-size: 2rem; font-weight: 900;
+  color: var(--cyan); text-shadow: var(--glow-cyan);
+}
+.meta-lbl { font-family: 'JetBrains Mono', monospace; font-size: .62rem; color: var(--text-dim); letter-spacing: .1em; text-transform: uppercase; margin-top: .25rem; }
+
+/* progress */
+#test-hud {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--void2); border: 1px solid rgba(0,240,255,0.15);
+  border-radius: 6px; padding: .9rem 1.2rem; margin-bottom: 1.5rem;
+}
+#timer {
+  font-family: 'Orbitron', monospace; font-size: .9rem; font-weight: 700;
+  color: var(--cyan); background: rgba(0,240,255,0.08);
+  padding: .35rem .8rem; border-radius: 3px; min-width: 72px; text-align: center;
+  border: 1px solid rgba(0,240,255,0.2);
+  transition: all .3s;
+}
+#timer.warn { color: var(--magenta); background: rgba(255,0,128,0.08); border-color: rgba(255,0,128,0.3); text-shadow: var(--glow-magenta); }
+#prog-track { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+#prog-fill {
+  height: 100%; border-radius: 3px; width: 0%;
+  background: linear-gradient(90deg, var(--cyan) 0%, var(--purple) 50%, var(--magenta) 100%);
+  transition: width .4s ease;
+  box-shadow: 0 0 10px rgba(0,240,255,0.5);
+}
+#prog-txt { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--text-muted); white-space: nowrap; }
+
+/* section header */
+.q-sec-hdr {
+  margin: 2rem 0 1.2rem; padding: 1rem 1.5rem;
+  border-radius: 6px; display: flex; align-items: center; gap: 1rem;
+  border: 1px solid;
+}
+.q-sec-hdr .s-ico { font-size: 1.3rem; }
+.q-sec-hdr .s-nm { font-weight: 700; font-size: .9rem; letter-spacing: .02em; }
+.q-sec-hdr .s-sb { font-size: .72rem; opacity: .6; font-family: 'JetBrains Mono', monospace; }
+
+/* question card */
+.q-card {
+  background: var(--void2); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px; margin-bottom: 1.2rem; overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+.q-card:hover { border-color: rgba(0,240,255,0.15); }
+.q-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .6rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(0,0,0,0.2);
+}
+.q-idx { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color: var(--text-dim); }
+.q-sec-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: .62rem; letter-spacing: .08em;
+  padding: .2rem .55rem; border-radius: 2px;
+}
+.q-body { padding: 1.3rem 1.2rem 1rem; }
+.q-txt { font-size: .9rem; color: var(--white); line-height: 1.65; font-weight: 500; }
+.opts { margin-top: 1rem; display: flex; flex-direction: column; gap: .5rem; }
+.opt {
+  display: flex; align-items: flex-start; gap: .8rem;
+  padding: .75rem 1rem; border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.07);
+  cursor: pointer; transition: all .18s; position: relative; overflow: hidden;
+}
+.opt::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(0,240,255,0.05), transparent);
+  opacity: 0; transition: opacity .2s;
+}
+.opt:hover::before { opacity: 1; }
+.opt:hover { border-color: rgba(0,240,255,0.25); }
+.opt input { display: none; }
+.opt-l {
+  width: 26px; height: 26px; border-radius: 4px; flex-shrink: 0;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: .68rem; font-weight: 700;
+  color: var(--text-muted); transition: all .2s;
+}
+.opt-txt { font-size: .84rem; color: rgba(240,248,255,0.75); line-height: 1.55; padding-top: 3px; }
+.opt.selected { border-color: rgba(0,240,255,0.4); background: rgba(0,240,255,0.05); }
+.opt.selected .opt-l { background: var(--cyan); color: var(--void); border-color: var(--cyan); }
+.opt.correct { border-color: var(--lime) !important; background: rgba(173,255,47,0.06) !important; }
+.opt.correct .opt-l { background: var(--lime); color: var(--void); border-color: var(--lime); }
+.opt.wrong { border-color: var(--magenta) !important; background: rgba(255,0,128,0.05) !important; }
+.opt.wrong .opt-l { background: var(--magenta); color: var(--white); border-color: var(--magenta); }
+
+/* test nav */
+.test-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 2rem; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06); }
+.sec-pips { display: flex; gap: .4rem; }
+.pip { width: 36px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1); transition: all .3s; }
+.pip.active { background: var(--cyan); box-shadow: 0 0 8px rgba(0,240,255,0.6); }
+.pip.done { background: var(--lime); }
+
+/* ─── RESULTS ────────────────────────── */
+#results { display: none; }
+.result-banner {
+  border-radius: 12px; padding: 3rem 2rem; text-align: center;
+  position: relative; overflow: hidden; margin-bottom: 2rem;
+  border: 1px solid rgba(0,240,255,0.2);
+  background: radial-gradient(ellipse at 50% -30%, rgba(0,240,255,0.12), transparent 60%), var(--void2);
+}
+.r-score {
+  font-family: 'Orbitron', monospace; font-size: 6rem; font-weight: 900;
+  color: var(--cyan); line-height: 1;
+  text-shadow: var(--glow-cyan);
+}
+.r-score span { font-size: 2.5rem; color: rgba(0,240,255,0.4); }
+.r-cat {
+  font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; margin: .5rem 0;
+}
+.r-desc { font-size: .88rem; color: var(--text-muted); max-width: 480px; margin: 0 auto; line-height: 1.7; }
+.sec-score-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 2rem; }
+.ssc {
+  background: var(--void2); border: 1px solid var(--glass-border);
+  border-radius: 8px; padding: 1.2rem; text-align: center;
+  transition: all .3s;
+}
+.ssc:hover { border-color: rgba(0,240,255,0.2); }
+.ssc .sv { font-family: 'Orbitron', monospace; font-size: 2rem; font-weight: 900; }
+.ssc .sm { font-size: .75rem; color: var(--text-dim); }
+.ssc .sl { font-size: .72rem; font-weight: 600; color: var(--text-muted); margin-top: .3rem; }
+.bar-section { background: var(--void2); border: 1px solid var(--glass-border); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; }
+.bar-section h3 { font-family: 'Orbitron', monospace; font-size: .75rem; color: var(--text-muted); letter-spacing: .1em; margin-bottom: 1.2rem; }
+.brow { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.blbl { width: 180px; font-size: .76rem; color: var(--text-muted); text-align: right; flex-shrink: 0; }
+.btrack { flex: 1; height: 18px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+.bfill { height: 100%; border-radius: 3px; transition: width 1.2s cubic-bezier(.19,1,.22,1); position: relative; }
+.bfill::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 80%, rgba(255,255,255,0.3)); }
+.bpct { width: 45px; font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--white); }
+
+/* ─── SCORING ────────────────────────── */
+#scoring { background: var(--void2); }
+.score-tbl-wrap { max-width: 1000px; margin: 2.5rem auto 0; overflow-x: auto; }
+.score-tbl { width: 100%; border-collapse: collapse; }
+.score-tbl thead th {
+  background: rgba(0,240,255,0.08); border: 1px solid rgba(0,240,255,0.15);
+  color: var(--cyan); padding: .9rem 1.1rem; text-align: left;
+  font-family: 'JetBrains Mono', monospace; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+}
+.score-tbl tbody td {
+  padding: .9rem 1.1rem; border: 1px solid rgba(255,255,255,0.05);
+  font-size: .84rem; vertical-align: middle; color: rgba(240,248,255,0.8);
+  transition: background .2s;
+}
+.score-tbl tbody tr:hover td { background: rgba(0,240,255,0.03); }
+.cat-pill {
+  display: inline-block; padding: .28rem .8rem; border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace; font-size: .68rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; border: 1px solid;
+}
+.info-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; max-width: 1000px; margin: 1.5rem auto 0; }
+.info-card {
+  background: var(--glass); border: 1px solid var(--glass-border); border-radius: 6px; padding: 1.3rem;
+}
+.info-card h4 { font-family: 'Orbitron', monospace; font-size: .72rem; color: var(--cyan); letter-spacing: .1em; margin-bottom: .75rem; }
+.info-card p { font-size: .8rem; color: var(--text-muted); line-height: 1.7; }
+
+/* ─── FOOTER ─────────────────────────── */
+footer {
+  position: relative; z-index: 10; background: var(--void);
+  border-top: 1px solid rgba(0,240,255,0.1);
+  padding: 3rem 5vw; text-align: center;
+}
+.footer-logo {
+  font-family: 'Orbitron', monospace; font-size: 1.2rem; font-weight: 900;
+  color: var(--cyan); text-shadow: var(--glow-cyan); margin-bottom: .5rem;
+  letter-spacing: .15em;
+}
+footer p { font-size: .75rem; color: var(--text-dim); line-height: 1.8; font-family: 'JetBrains Mono', monospace; }
+
+/* ─── ANIMATIONS ─────────────────────── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s, transform .7s; }
+.reveal.on { opacity: 1; transform: none; }
+
+/* ─── RESPONSIVE ─────────────────────── */
+@media (max-width: 900px) {
+  .hero-inner, .about-grid, .attrs-grid, .steps-row, .sec-score-grid { grid-template-columns: 1fr; }
+  .steps-row { border-radius: 8px; }
+  .hero-terminal { display: none; }
+  nav .nav-links { display: none; }
+  .meta-grid { flex-wrap: wrap; }
+  .info-2col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- BG -->
+<div class="grid-bg"></div>
+<div class="scanlines"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">MIND<span>.exe</span></div>
+  <div class="nav-links">
+    <a href="#about">about</a>
+    <a href="#attributes">skills</a>
+    <a href="#how">process</a>
+    <a href="#scoring">scoring</a>
+  </div>
+  <a href="#test" class="nav-cta">run_test( )</a>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag"><div class="dot"></div>ALT-60 v1.0 · Standardised Assessment · Active</div>
+      <h1 class="hero-title">
+        Analytical &<span class="glitch">Logical Thinking</span>Test
+      </h1>
+      <p class="hero-sub">A next-gen cognitive assessment measuring your problem-solving, reasoning, critical thinking, and decision-making — no cap, fully standardised.</p>
+      <div class="hero-actions">
+        <a href="#test" class="btn-neon btn-neon-cyan">run_test() →</a>
+        <a href="#about" class="btn-neon btn-neon-outline">learn_more()</a>
+      </div>
+      <div class="hero-stats">
+        <div class="h-stat"><div class="val">60</div><div class="lbl">questions</div></div>
+        <div class="h-stat-divider"></div>
+        <div class="h-stat"><div class="val">04</div><div class="lbl">modules</div></div>
+        <div class="h-stat-divider"></div>
+        <div class="h-stat"><div class="val">60m</div><div class="lbl">duration</div></div>
+        <div class="h-stat-divider"></div>
+        <div class="h-stat"><div class="val">0</div><div class="lbl">negatives</div></div>
+      </div>
+    </div>
+    <div class="hero-terminal">
+      <div class="terminal-bar">
+        <div class="t-dot" style="background:#ff5f56"></div>
+        <div class="t-dot" style="background:#ffbd2e"></div>
+        <div class="t-dot" style="background:#27c93f"></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:rgba(255,255,255,0.3);margin-left:.5rem;">mind.exe — cognitive_scan</span>
+      </div>
+      <div class="terminal-body">
+        <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">load_modules --all</span></div>
+        <div class="t-line"><span class="t-prompt">↳</span><span class="t-out">modules loaded: 4 / 4</span></div>
+        <div style="margin-top:.5rem;">
+          <div class="attr-row" style="--c:var(--cyan);border-color:rgba(0,240,255,0.2);background:rgba(0,240,255,0.04)">
+            <div><div class="label" style="color:var(--cyan)">🧩 Problem Solving</div><div class="bar-mini" style="background:linear-gradient(90deg,var(--cyan),transparent)"></div></div>
+            <div class="qs">15Q</div>
+          </div>
+          <div class="attr-row" style="border-color:rgba(173,255,47,0.2);background:rgba(173,255,47,0.04)">
+            <div><div class="label" style="color:var(--lime)">⚡ Logical Reasoning</div><div class="bar-mini" style="background:linear-gradient(90deg,var(--lime),transparent)"></div></div>
+            <div class="qs">15Q</div>
+          </div>
+          <div class="attr-row" style="border-color:rgba(168,85,247,0.2);background:rgba(168,85,247,0.04)">
+            <div><div class="label" style="color:var(--purple)">🔍 Critical Thinking</div><div class="bar-mini" style="background:linear-gradient(90deg,var(--purple),transparent)"></div></div>
+            <div class="qs">15Q</div>
+          </div>
+          <div class="attr-row" style="border-color:rgba(255,183,3,0.2);background:rgba(255,183,3,0.04)">
+            <div><div class="label" style="color:var(--amber)">⚖️ Decision Making</div><div class="bar-mini" style="background:linear-gradient(90deg,var(--amber),transparent)"></div></div>
+            <div class="qs">15Q</div>
+          </div>
+        </div>
+        <div class="t-line" style="margin-top:.75rem;"><span class="t-prompt">$</span><span class="t-cmd" style="color:var(--lime)">status: READY_TO_RUN ✓</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section-wrap">
+  <div class="max-w">
+    <div class="s-label reveal" style="color:var(--cyan)">// about the assessment</div>
+    <h2 class="s-title reveal" style="color:var(--white)">Scientifically grounded.<br><span style="color:var(--cyan)">Brutally honest.</span></h2>
+    <div class="about-grid">
+      <div class="reveal">
+        <p class="about-p">The ALT-60 (Analytical & Logical Thinking Test) is a standardised psychological assessment hitting four core dimensions of higher-order cognitive ability. No vibes, just data.</p>
+        <p class="about-p">Built on Sternberg's Triarchic Theory and the Cattell-Horn-Carroll (CHC) model, this isn't your average quiz — it's a legit cognitive profiling tool used in academic, clinical, and organisational settings.</p>
+        <p class="about-p">It goes hard on measuring how you actually think — not just what you know.</p>
+        <div class="theory-chips">
+          <span class="chip">Sternberg Triarchic Theory</span>
+          <span class="chip">CHC Cognitive Model</span>
+          <span class="chip">RPD Decision Framework</span>
+          <span class="chip">Cognitive Bias Research</span>
+        </div>
+      </div>
+      <div class="about-cards reveal">
+        <div class="about-card"><div class="ico">🎓</div><h4>Academic</h4><p>Identify cognitive strengths and gaps for targeted learning support.</p></div>
+        <div class="about-card"><div class="ico">🏢</div><h4>Organisational</h4><p>Assess analytical competency in talent selection and leadership.</p></div>
+        <div class="about-card"><div class="ico">🧠</div><h4>Clinical</h4><p>Support cognitive evaluation and psychological profiling.</p></div>
+        <div class="about-card"><div class="ico">📊</div><h4>Research</h4><p>A reliable instrument for studying reasoning and cognitive development.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ATTRIBUTES -->
+<section id="attributes" class="section-wrap">
+  <div class="max-w">
+    <div class="s-label reveal" style="color:var(--magenta)">// four_modules.load()</div>
+    <h2 class="s-title reveal" style="color:var(--white)">What we <span style="color:var(--magenta);text-shadow:var(--glow-magenta)">measure.</span></h2>
+    <div class="attrs-grid">
+      <div class="attr-card reveal" style="--c:var(--cyan);--c-dim:rgba(0,240,255,0.12)">
+        <div class="attr-num">I</div>
+        <div class="attr-badge">Section I</div>
+        <h3>Problem Solving</h3>
+        <p>Capacity to crack complex problems across numerical, spatial, and lateral domains. Zero guessing, all logic.</p>
+        <ul class="skill-list">
+          <li>Mathematical & numerical reasoning</li>
+          <li>Spatial & pattern-based solving</li>
+          <li>Lateral and divergent thinking</li>
+          <li>Constraint-based logic puzzles</li>
+        </ul>
+      </div>
+      <div class="attr-card reveal" style="--c:var(--lime);--c-dim:rgba(173,255,47,0.12)">
+        <div class="attr-num">II</div>
+        <div class="attr-badge" style="color:var(--lime);border-color:var(--lime);background:rgba(173,255,47,0.08)">Section II</div>
+        <h3>Logical Reasoning</h3>
+        <p>Deductive and inductive reasoning. If it doesn't follow logically, you'll catch it instantly.</p>
+        <ul class="skill-list">
+          <li>Syllogistic & deductive reasoning</li>
+          <li>Series completion & patterns</li>
+          <li>Analogical reasoning</li>
+          <li>Blood relations & ranking</li>
+        </ul>
+      </div>
+      <div class="attr-card reveal" style="--c:var(--purple);--c-dim:rgba(168,85,247,0.12)">
+        <div class="attr-num">III</div>
+        <div class="attr-badge" style="color:var(--purple);border-color:var(--purple);background:rgba(168,85,247,0.08)">Section III</div>
+        <h3>Critical Thinking</h3>
+        <p>Spot logical fallacies, dissect arguments, and evaluate evidence without getting played by bad takes.</p>
+        <ul class="skill-list">
+          <li>Logical fallacy identification</li>
+          <li>Argument strength evaluation</li>
+          <li>Evidence quality assessment</li>
+          <li>Correlation vs. causation</li>
+        </ul>
+      </div>
+      <div class="attr-card reveal" style="--c:var(--amber);--c-dim:rgba(255,183,3,0.12)">
+        <div class="attr-num">IV</div>
+        <div class="attr-badge" style="color:var(--amber);border-color:var(--amber);background:rgba(255,183,3,0.08)">Section IV</div>
+        <h3>Decision Making</h3>
+        <p>Choose wisely under pressure, manage cognitive biases, and make rational calls when it actually matters.</p>
+        <ul class="skill-list">
+          <li>Rational choice under uncertainty</li>
+          <li>Cognitive bias recognition</li>
+          <li>Risk & cost-benefit analysis</li>
+          <li>Ethical & contextual judgement</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how" class="section-wrap">
+  <div class="max-w">
+    <div class="s-label reveal" style="color:var(--lime)">// how_it_works.md</div>
+    <h2 class="s-title reveal" style="color:var(--white)">The <span style="color:var(--lime);text-shadow:var(--glow-lime)">process.</span></h2>
+    <div class="steps-row reveal">
+      <div class="step-card">
+        <div class="step-n">Step_01</div>
+        <span class="step-ico">📋</span>
+        <h4>Read the Brief</h4>
+        <p>4 sections. 15 MCQs each. 1 correct answer per question. No negative marking. Understand the format first.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-n">Step_02</div>
+        <span class="step-ico">✏️</span>
+        <h4>Answer All 60</h4>
+        <p>Work through all sections within 60 minutes. Aim for ~15 minutes per section. Clock is ticking.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-n">Step_03</div>
+        <span class="step-ico">⚡</span>
+        <h4>Instant Scoring</h4>
+        <p>Each correct answer = 1 mark. Scores are calculated in real time as you answer. No waiting.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-n">Step_04</div>
+        <span class="step-ico">📊</span>
+        <h4>Get Your Profile</h4>
+        <p>See your total score, sub-scores per attribute, performance category, and a full visual breakdown.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEST -->
+<section id="test" class="section-wrap">
+  <div class="max-w" style="text-align:center;">
+    <div class="s-label" style="color:var(--cyan)">// run_test()</div>
+    <h2 class="s-title" style="color:var(--white)">Are you <span style="color:var(--cyan);text-shadow:var(--glow-cyan)">built different?</span></h2>
+  </div>
+  <div id="test-wrap">
+
+    <!-- LANDING -->
+    <div id="test-landing">
+      <div class="meta-grid">
+        <div class="meta-box"><div class="meta-val">60</div><div class="meta-lbl">questions</div></div>
+        <div class="meta-box"><div class="meta-val">60</div><div class="meta-lbl">minutes</div></div>
+        <div class="meta-box"><div class="meta-val">+1</div><div class="meta-lbl">per correct</div></div>
+        <div class="meta-box"><div class="meta-val">0</div><div class="meta-lbl">negatives</div></div>
+      </div>
+      <p style="color:var(--text-muted);font-size:.88rem;max-width:480px;margin:0 auto 2rem;line-height:1.8;font-family:'JetBrains Mono',monospace;">Find a quiet spot. Timer starts when you click. Answer feedback is shown immediately. Submit when done or let the timer auto-submit.</p>
+      <button class="btn-neon btn-neon-cyan" onclick="startTest()" style="font-size:.8rem;padding:1rem 2.5rem;">initialise_test() →</button>
+    </div>
+
+    <!-- ACTIVE TEST -->
+    <div id="test-area" style="display:none">
+      <div id="test-hud">
+        <div id="timer">60:00</div>
+        <div id="prog-track"><div id="prog-fill"></div></div>
+        <div id="prog-txt">0 / 60 done</div>
+      </div>
+      <div id="q-wrap"></div>
+      <div class="test-footer">
+        <div class="sec-pips">
+          <div class="pip active" id="pip0"></div>
+          <div class="pip" id="pip1"></div>
+          <div class="pip" id="pip2"></div>
+          <div class="pip" id="pip3"></div>
+        </div>
+        <button class="btn-neon btn-neon-cyan" id="sub-btn" onclick="submitTest()" style="opacity:.4;pointer-events:none;font-size:.72rem;">submit_results() →</button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results">
+      <div class="result-banner">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.12em;color:var(--text-dim);margin-bottom:.5rem;text-transform:uppercase;">// scan_complete · cognitive_profile_generated</div>
+        <div class="r-score" id="r-score">0<span>/60</span></div>
+        <div class="r-cat" id="r-cat"></div>
+        <div class="r-desc" id="r-desc"></div>
+      </div>
+      <div class="sec-score-grid" id="ssg"></div>
+      <div class="bar-section">
+        <h3>// attribute_breakdown</h3>
+        <div id="bar-area"></div>
+      </div>
+      <div style="text-align:center;margin-top:1.5rem;">
+        <button class="btn-neon btn-neon-outline" onclick="retakeTest()">retake_test() →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORING -->
+<section id="scoring" class="section-wrap">
+  <div class="max-w">
+    <div class="s-label reveal" style="color:var(--purple)">// scoring_matrix.json</div>
+    <h2 class="s-title reveal" style="color:var(--white)">Your <span style="color:var(--purple);text-shadow:0 0 20px rgba(168,85,247,.4)">category.</span></h2>
+    <div class="score-tbl-wrap reveal">
+      <table class="score-tbl">
+        <thead><tr><th>category</th><th>score_range</th><th>percentage</th><th>what_it_means</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="cat-pill" style="color:var(--cyan);border-color:var(--cyan);background:var(--cyan-dim)">EXCEPTIONAL</span></td>
+            <td style="font-family:'JetBrains Mono',monospace;color:var(--cyan)">54 – 60</td>
+            <td>90% – 100%</td>
+            <td>Superior analytical and logical thinking across all four domains</td>
+          </tr>
+          <tr>
+            <td><span class="cat-pill" style="color:var(--lime);border-color:var(--lime);background:var(--lime-dim)">ABOVE AVG</span></td>
+            <td style="font-family:'JetBrains Mono',monospace;color:var(--lime)">48 – 53</td>
+            <td>80% – 89%</td>
+            <td>Strong thinker with well-developed reasoning and decision-making skills</td>
+          </tr>
+          <tr>
+            <td><span class="cat-pill" style="color:var(--amber);border-color:var(--amber);background:rgba(255,183,3,0.1)">AVERAGE</span></td>
+            <td style="font-family:'JetBrains Mono',monospace;color:var(--amber)">36 – 47</td>
+            <td>60% – 79%</td>
+            <td>Adequate analytical ability; some areas could use levelling up</td>
+          </tr>
+          <tr>
+            <td><span class="cat-pill" style="color:var(--magenta);border-color:var(--magenta);background:var(--magenta-dim)">BELOW AVG</span></td>
+            <td style="font-family:'JetBrains Mono',monospace;color:var(--magenta)">24 – 35</td>
+            <td>40% – 59%</td>
+            <td>Limited logical and analytical skills; structured training recommended</td>
+          </tr>
+          <tr>
+            <td><span class="cat-pill" style="color:#ff4444;border-color:#ff4444;background:rgba(255,68,68,0.1)">NEEDS WORK</span></td>
+            <td style="font-family:'JetBrains Mono',monospace;color:#ff4444">Below 24</td>
+            <td>Below 40%</td>
+            <td>Significant difficulty with reasoning tasks; intensive intervention recommended</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="info-2col reveal">
+      <div class="info-card">
+        <h4>⏱ TIME & FORMAT</h4>
+        <p>Total time: <span style="color:var(--cyan)">60 minutes</span> strictly timed. ~15 min per section. All questions are four-option MCQs with exactly one correct answer.</p>
+      </div>
+      <div class="info-card">
+        <h4>📊 MARKING SCHEME</h4>
+        <p><span style="color:var(--lime)">+1 mark</span> for each correct answer. <span style="color:var(--magenta)">0</span> for incorrect or unanswered. No negative marking. Max score: <span style="color:var(--cyan)">60 marks</span>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">MIND.EXE</div>
+  <p>ALT-60 · Analytical & Logical Thinking Test · Version 1.0<br>
+  A standardised psychological assessment instrument · For educational & professional use<br>
+  Results should be interpreted by a qualified assessor · No cap.</p>
+</footer>
+
+<script>
+// ── CURSOR ────────────────────────────────────────────────────────
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.left = mx+'px'; dot.style.top = my+'px'; });
+function animRing() {
+  rx += (mx - rx) * .12; ry += (my - ry) * .12;
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button,.opt,.about-card,.attr-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.transform = 'translate(-50%,-50%) scale(1.6)'; ring.style.borderColor = 'rgba(0,240,255,0.7)'; });
+  el.addEventListener('mouseleave', () => { ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.borderColor = 'rgba(0,240,255,0.4)'; });
+});
+
+// ── SCROLL REVEAL ──────────────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('on'), i * 80); } });
+}, { threshold: .1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// ── QUESTIONS DATA ─────────────────────────────────────────────────
+const SECS = [
+  { name:"Problem Solving Ability", icon:"🧩", color:"var(--cyan)", dimColor:"rgba(0,240,255,0.1)", borderColor:"rgba(0,240,255,0.25)", qs:[
+    {q:"A farmer has 17 sheep. All but 9 die. How many sheep are left?",o:["8","9","17","0"],a:1},
+    {q:"A bat and a ball cost ₹110 together. The bat costs ₹100 more than the ball. How much does the ball cost?",o:["₹10","₹5","₹15","₹20"],a:1},
+    {q:"If it takes 5 machines 5 minutes to make 5 widgets, how long will it take 100 machines to make 100 widgets?",o:["100 minutes","5 minutes","50 minutes","20 minutes"],a:1},
+    {q:"A snail is at the bottom of a 10-foot well. Each day it climbs 3 feet and each night slips back 2 feet. In how many days will it escape?",o:["10 days","8 days","9 days","7 days"],a:1},
+    {q:"Maria's mother has four children. First: April, second: May, third: June. What is the fourth child's name?",o:["July","August","Maria","January"],a:2},
+    {q:"A car goes A→B at 60 km/h and returns at 40 km/h. What is the average speed for the whole journey?",o:["50 km/h","48 km/h","52 km/h","45 km/h"],a:1},
+    {q:"In a class of 30 students, 14 like Maths, 16 like Science, and 6 like both. How many like neither?",o:["6","8","4","10"],a:0},
+    {q:"You have two ropes that each burn in exactly 1 hour but unevenly. How do you measure exactly 45 minutes?",o:["Light rope 1 from both ends and rope 2 from one end; when rope 1 finishes, light the other end of rope 2","Cut both ropes in half and burn each piece","Light both ropes from both ends simultaneously","Impossible without a clock"],a:0},
+    {q:"A 200m train passes a stationary pole in 10 seconds. How long to pass a 300m platform?",o:["15 seconds","20 seconds","25 seconds","30 seconds"],a:2},
+    {q:"Three boxes labelled 'Apples', 'Oranges', 'Apples & Oranges' — all labels are wrong. You pick one fruit from one box. How do you correctly label all?",o:["Pick from the box labelled 'Apples & Oranges'","Pick from 'Apples'","Pick from 'Oranges'","You cannot determine correct labels from one pick"],a:0},
+    {q:"A clock shows 3:15. What is the exact angle between the hour and minute hands?",o:["0°","7.5°","15°","22.5°"],a:1},
+    {q:"You have 8 balls, one slightly heavier. Using a balance scale in exactly 2 weighings, how do you find it?",o:["Weigh 4 vs 4, then 2 vs 2 from heavier side","Weigh 3 vs 3; if equal, weigh remaining 2; if unequal, weigh 1 vs 1 from heavier group","Weigh 1 vs 1 repeatedly","Impossible in 2 weighings"],a:1},
+    {q:"Rearranging C-I-F-I-C-A-P gives you the name of which ocean?",o:["Atlantic","Pacific","Arctic","Indian"],a:1},
+    {q:"Two equal-length candles: A burns out in 4h, B in 6h. After how many hours is A twice as short as B?",o:["2 hours","3 hours","2.5 hours","1.5 hours"],a:1},
+    {q:"A room has 4 corners. A cat sits in each corner. Each cat sees 3 cats. How many cats in the room?",o:["12","16","4","8"],a:2},
+  ]},
+  { name:"Logical Reasoning", icon:"⚡", color:"var(--lime)", dimColor:"rgba(173,255,47,0.1)", borderColor:"rgba(173,255,47,0.25)", qs:[
+    {q:"All roses are flowers. All flowers need water. Therefore:",o:["All roses need water","Some roses need water","No roses need water","Cannot be determined"],a:0},
+    {q:"Complete the number series: 2, 6, 12, 20, 30, ___",o:["42","40","44","38"],a:0},
+    {q:"Some cats are animals. Some animals are birds. Which conclusion is logically valid?",o:["Some cats are birds","Some birds are cats","All cats are birds","No definite conclusion can be drawn"],a:3},
+    {q:"Find the odd one out: Triangle, Square, Rectangle, Cone, Pentagon",o:["Triangle","Square","Cone","Pentagon"],a:2},
+    {q:"If the day after tomorrow is Wednesday, what day was yesterday?",o:["Saturday","Sunday","Friday","Monday"],a:1},
+    {q:"Doctor : Hospital :: Teacher : ___",o:["Book","School","Student","Knowledge"],a:1},
+    {q:"In a row, Priya is 7th from the left and 5th from the right. How many people are in the row?",o:["11","12","13","10"],a:0},
+    {q:"Which number completes the series? 1, 1, 2, 3, 5, 8, 13, ___",o:["18","21","20","24"],a:1},
+    {q:"If A > B, B > C, and C > D, which is always true?",o:["A > D","D > A","B > D only if A > C","None of the above"],a:0},
+    {q:"All politicians are public figures. Meena is a politician. Therefore Meena is a public figure. This argument is:",o:["Valid and definitely sound","Valid, but not necessarily sound if the premise is false","Invalid","Neither valid nor sound"],a:1},
+    {q:"Complete: AZ, BY, CX, DW, ___",o:["EV","FU","ET","FV"],a:0},
+    {q:"Aarav is Priya's brother. Priya is Ravi's sister. Ravi is Seema's father. Seema is Kavya's mother. Aarav's relation to Kavya?",o:["Grandfather","Great-uncle","Uncle","Father"],a:1},
+    {q:"A is taller than B. C is shorter than A. B is taller than C. Who is shortest?",o:["A","B","C","Cannot be determined"],a:2},
+    {q:"Which best describes a valid deductive argument?",o:["The conclusion is probably true","If premises are true, the conclusion must be true","The conclusion can be false even when premises are true","The premises are always factually correct"],a:1},
+    {q:"What comes next? ○□△ | ○○□□△△ | ○○○□□□△△△ | ___",o:["○○○○□□□□△△△△","○○□□△△","△△△△○○○○□□□□","Pattern ends here"],a:0},
+  ]},
+  { name:"Critical Thinking", icon:"🔍", color:"var(--purple)", dimColor:"rgba(168,85,247,0.1)", borderColor:"rgba(168,85,247,0.25)", qs:[
+    {q:"A study shows breakfast eaters score higher on tests. Classmate concludes: 'Eating breakfast makes you smarter.' Key flaw?",o:["Nothing — valid conclusion","Correlation does not imply causation","Study sample is too large","Intelligence can't be measured by test scores"],a:1},
+    {q:"'90% of road accidents happen within 10km of home.' Person concludes they're safer driving far from home. What's wrong?",o:["Sound conclusion based on statistics","Ad hominem fallacy","Misleading statistics — people drive most near home (base rate neglect)","Straw man fallacy"],a:2},
+    {q:"What unstated assumption underlies: 'This medicine works because millions believe it does'?",o:["Medicine is always expensive","Widespread belief can make something medically effective","Millions are medical doctors","Medicines must be scientifically tested"],a:1},
+    {q:"'All students who study hard pass exams. John passed. Therefore John studied hard.' This reasoning is:",o:["Modus ponens (valid)","Modus tollens (valid)","Affirming the consequent (fallacy)","A sound inductive argument"],a:2},
+    {q:"'Our product is used by millions, so it must be the best.' This fallacy is called:",o:["Appeal to authority","Appeal to popularity (Ad populum)","Hasty generalization","Circular reasoning"],a:1},
+    {q:"Which statement most WEAKENS the argument that violent video games cause aggression in children?",o:["Some children who play violent games are not aggressive","Children who are naturally aggressive tend to select violent games","Video games are popular in many countries","Parents should monitor screen time"],a:1},
+    {q:"'You are either with us or against us — there is no middle ground.' This fallacy is:",o:["Red herring","False dichotomy (black-and-white thinking)","Ad hominem","Slippery slope"],a:1},
+    {q:"Which constitutes the strongest evidence for a scientific claim?",o:["Personal testimony of many individuals","A single expert's opinion","Multiple independent peer-reviewed replication studies","Popular consensus"],a:2},
+    {q:"'We should not trust Dr. Sharma on nutrition because she eats junk food.' This is:",o:["Straw man fallacy","Ad hominem (tu quoque) fallacy","Appeal to authority","Hasty generalization"],a:1},
+    {q:"Cities with more temples have higher crime rates — researcher concludes religion causes crime. Most likely explanation?",o:["Religion promotes criminal behaviour","Both variables are caused by population size (lurking variable)","Crime is random","Temples attract criminal activity"],a:1},
+    {q:"'No one has proved ghosts don't exist — therefore they must exist.' This exemplifies:",o:["Appeal to ignorance (Argumentum ad ignorantiam)","False causation","Circular reasoning","Straw man"],a:0},
+    {q:"Most rigorous method to test if a new teaching method improves performance?",o:["Use it with all students and compare to previous year","Ask students if they prefer it","Randomly assign students to treatment and control groups, then compare","Ask experienced teachers"],a:2},
+    {q:"'My grandfather smoked all his life and lived to 95, so smoking can't be harmful.' This is:",o:["Anecdotal evidence used to refute statistical findings","Strong empirical evidence","A valid inductive argument","Modus tollens reasoning"],a:0},
+    {q:"Most important question when critically evaluating a source?",o:["Is it popular on social media?","Does it confirm what I already believe?","Does the source have a conflict of interest or hidden bias?","Was it published recently?"],a:2},
+    {q:"A debate opponent misrepresents your argument as weaker to easily defeat it. This tactic is called:",o:["Red herring","Straw man fallacy","False dichotomy","Equivocation"],a:1},
+  ]},
+  { name:"Decision Making Ability", icon:"⚖️", color:"var(--amber)", dimColor:"rgba(255,183,3,0.1)", borderColor:"rgba(255,183,3,0.25)", qs:[
+    {q:"Guaranteed ₹500 vs 70% chance of winning ₹1,000. Rational approach?",o:["Always take the guaranteed amount","Calculate expected value (₹700 for gamble) and choose based on risk tolerance","Always take the gamble","Flip a coin"],a:1},
+    {q:"Manager hesitates to fire an underperforming employee due to 10-year loyalty. This is primarily:",o:["Compassionate leadership","Sunk cost fallacy influencing a decision","Sound risk-averse management","Rational data-driven decision-making"],a:1},
+    {q:"Which approach involves systematically generating all options, evaluating pros/cons, and selecting the optimal alternative?",o:["Intuitive decision-making","Rational/Analytical decision-making","Reactive decision-making","Collaborative decision-making"],a:1},
+    {q:"You invested ₹10,000 in a stock now worth ₹4,000. Most rational action?",o:["Hold — you've already lost so much","Assess future prospects objectively, ignoring original investment amount","Invest more to average down","Do nothing"],a:1},
+    {q:"In an emergency with limited info and no time to wait, most effective decision approach?",o:["Delay until all information is gathered","Use experience-based pattern recognition (Recognition-Primed Decision)","Delegate to someone with more authority","Avoid decision to minimise risk"],a:1},
+    {q:"After researching two laptops, a clearly inferior third option appears — and now you prefer Option A more. This shift is caused by:",o:["More rational evaluation of needs","The decoy effect (asymmetric dominance bias)","Risk aversion","Confirmation bias"],a:1},
+    {q:"A project team rushes to consensus because no one wants to voice disagreement. This is called:",o:["True democratic consensus","Groupthink","Rational collective compromise","Efficient collaborative decision-making"],a:1},
+    {q:"Job A pays more but has limited growth. Job B pays less but has strong career development. Best tool to decide?",o:["Flip a coin","Automatically accept higher pay","Create a weighted decision matrix assigning importance to each factor","Ask friends or family"],a:2},
+    {q:"'This strategy always worked before, so it will certainly work in the future.' This reflects:",o:["Sound evidence-based reasoning","Status quo bias and overconfidence","Prudent risk management","Analytical thinking"],a:1},
+    {q:"A company has mixed market research data on a new product. Most rational next step?",o:["Launch immediately — speed is competitive advantage","Cancel to avoid risk","Conduct a small-scale pilot test to gather more decisive data","Rely on executive intuition"],a:2},
+    {q:"Which best defines a HIGH-QUALITY decision, regardless of outcome?",o:["A decision that produced a good result","A decision made using best available info, clear reasoning, and sound process","A decision everyone agreed upon","A decision made quickly under pressure"],a:1},
+    {q:"You must allocate a limited budget across 5 competing projects. Most rational strategy?",o:["Fund the most popular project","Divide budget equally","Prioritise by expected return on investment relative to cost","Fund whichever projects are cheapest"],a:2},
+    {q:"A junior nurse spots a potential medication error by a senior doctor. Best action?",o:["Ignore it to avoid conflict","Report immediately through proper clinical safety channels","Quietly correct the error without telling anyone","Wait to see if patient shows negative symptoms"],a:1},
+    {q:"After a bad decision, a manager realises warning signs were visible earlier. Overestimating predictability in hindsight is called:",o:["Hindsight bias","Confirmation bias","Anchoring bias","Availability heuristic"],a:0},
+    {q:"A leader asks three vendors to each present only their single strongest advantage before deciding quickly. This is an example of:",o:["Irrational decision-making due to incomplete data","Satisficing — choosing 'good enough' given constraints","Groupthink","Sunk cost reasoning"],a:1},
+  ]},
+];
+
+// ── STATE ──────────────────────────────────────────────────────────
+let answers = {};
+let timerInt = null;
+let sLeft = 3600;
+
+// ── RENDER ─────────────────────────────────────────────────────────
+function renderQs() {
+  const wrap = document.getElementById('q-wrap');
+  wrap.innerHTML = '';
+  const L = ['A','B','C','D'];
+  SECS.forEach((sec, si) => {
+    const hdr = document.createElement('div');
+    hdr.className = 'q-sec-hdr';
+    hdr.style.cssText = `background:${sec.dimColor};border-color:${sec.borderColor};`;
+    hdr.innerHTML = `<div class="s-ico">${sec.icon}</div><div><div class="s-nm" style="color:${sec.color}">Section ${['I','II','III','IV'][si]}: ${sec.name}</div><div class="s-sb">Q${si*15+1} – Q${si*15+15}</div></div>`;
+    wrap.appendChild(hdr);
+
+    sec.qs.forEach((q, qi) => {
+      const key = `${si}_${qi}`;
+      const gn = si*15 + qi + 1;
+      const card = document.createElement('div');
+      card.className = 'q-card'; card.id = `card-${key}`;
+      const optsHtml = q.o.map((opt, oi) => `
+        <label class="opt" id="opt-${key}-${oi}" onclick="pick('${key}',${oi},${q.a},${oi===q.a})">
+          <input type="radio" name="${key}" value="${oi}">
+          <div class="opt-l">${L[oi]}</div>
+          <div class="opt-txt">${opt}</div>
+        </label>`).join('');
+      card.innerHTML = `
+        <div class="q-top">
+          <div class="q-idx">Q${gn} of 60</div>
+          <div class="q-sec-tag" style="color:${sec.color};background:${sec.dimColor};border:1px solid ${sec.borderColor};font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.06em;">${sec.icon} ${sec.name}</div>
+        </div>
+        <div class="q-body"><div class="q-txt">${q.q}</div><div class="opts">${optsHtml}</div></div>`;
+      wrap.appendChild(card);
+    });
+  });
+}
+
+// ── PICK ───────────────────────────────────────────────────────────
+function pick(key, chosen, correct, isRight) {
+  if (answers[key] !== undefined) return;
+  answers[key] = chosen;
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById(`opt-${key}-${i}`);
+    if (!el) continue;
+    el.style.pointerEvents = 'none';
+    if (i === correct) el.classList.add('correct');
+    else if (i === chosen && !isRight) el.classList.add('wrong');
+  }
+  updateHUD();
+}
+
+// ── HUD ────────────────────────────────────────────────────────────
+function updateHUD() {
+  const done = Object.keys(answers).length;
+  document.getElementById('prog-txt').textContent = `${done} / 60 done`;
+  document.getElementById('prog-fill').style.width = `${(done/60)*100}%`;
+  for (let s = 0; s < 4; s++) {
+    let c = 0;
+    for (let q = 0; q < 15; q++) if (answers[`${s}_${q}`] !== undefined) c++;
+    const pip = document.getElementById(`pip${s}`);
+    if (c === 15) { pip.classList.remove('active'); pip.classList.add('done'); }
+    else if (c > 0) pip.classList.add('active');
+  }
+  const btn = document.getElementById('sub-btn');
+  if (done >= 60) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+}
+
+// ── TIMER ──────────────────────────────────────────────────────────
+function startTimer() {
+  timerInt = setInterval(() => {
+    sLeft--;
+    const m = Math.floor(sLeft/60), s = sLeft % 60;
+    const td = document.getElementById('timer');
+    td.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (sLeft <= 300) td.classList.add('warn');
+    if (sLeft <= 0) { clearInterval(timerInt); submitTest(); }
+  }, 1000);
+}
+
+// ── START ──────────────────────────────────────────────────────────
+function startTest() {
+  document.getElementById('test-landing').style.display = 'none';
+  document.getElementById('test-area').style.display = 'block';
+  renderQs();
+  startTimer();
+}
+
+// ── SUBMIT ─────────────────────────────────────────────────────────
+function submitTest() {
+  clearInterval(timerInt);
+  SECS.forEach((sec, si) => {
+    sec.qs.forEach((q, qi) => {
+      const key = `${si}_${qi}`;
+      if (answers[key] === undefined) {
+        for (let i = 0; i < 4; i++) {
+          const el = document.getElementById(`opt-${key}-${i}`);
+          if (el) { el.style.pointerEvents = 'none'; if (i === q.a) el.classList.add('correct'); }
+        }
+      }
+    });
+  });
+
+  const scores = SECS.map((sec, si) => sec.qs.filter((q, qi) => answers[`${si}_${qi}`] === q.a).length);
+  const total = scores.reduce((a,b)=>a+b,0);
+
+  let cat, desc, catColor;
+  if (total >= 54)       { cat = '⭐ EXCEPTIONAL'; desc = 'Sheesh — superior analytical and logical thinking across ALL four domains. Built different fr.'; catColor='var(--cyan)'; }
+  else if (total >= 48)  { cat = '✦ ABOVE AVERAGE'; desc = 'Strong analytical thinker with well-developed reasoning and decision-making skills. W rizz.'; catColor='var(--lime)'; }
+  else if (total >= 36)  { cat = '◆ AVERAGE'; desc = 'Solid cognitive foundation. Some domains could use levelling up but you are not cooked.'; catColor='var(--amber)'; }
+  else if (total >= 24)  { cat = '▲ BELOW AVERAGE'; desc = 'Limited logical and analytical skills in key areas. Time to grind those reasoning skills fr.'; catColor='var(--magenta)'; }
+  else                   { cat = '● NEEDS WORK'; desc = 'Significant difficulty with reasoning tasks. Do not be cooked — structured training will glow you up.'; catColor='#ff4444'; }
+
+  document.getElementById('test-area').style.display = 'none';
+  const res = document.getElementById('results');
+  res.style.display = 'block';
+  document.getElementById('r-score').innerHTML = `${total}<span>/60</span>`;
+  document.getElementById('r-cat').textContent = cat;
+  document.getElementById('r-cat').style.color = catColor;
+  document.getElementById('r-desc').textContent = desc;
+
+  const ssg = document.getElementById('ssg');
+  SECS.forEach((sec, i) => {
+    const box = document.createElement('div');
+    box.className = 'ssc';
+    box.innerHTML = `<div class="sv" style="color:${sec.color}">${scores[i]}</div><div class="sm">/15</div><div class="sl">${sec.icon} ${sec.name}</div>`;
+    ssg.appendChild(box);
+  });
+
+  const ba = document.getElementById('bar-area');
+  SECS.forEach((sec, i) => {
+    const pct = Math.round((scores[i]/15)*100);
+    const row = document.createElement('div');
+    row.className = 'brow';
+    row.innerHTML = `<div class="blbl">${sec.icon} ${sec.name}</div><div class="btrack"><div class="bfill" style="background:${sec.color};width:0%;box-shadow:0 0 10px ${sec.dimColor}" data-w="${pct}%"></div></div><div class="bpct">${pct}%</div>`;
+    ba.appendChild(row);
+  });
+  setTimeout(() => document.querySelectorAll('.bfill').forEach(el => el.style.width = el.dataset.w), 100);
+  res.scrollIntoView({ behavior:'smooth' });
+}
+
+// ── RETAKE ─────────────────────────────────────────────────────────
+function retakeTest() {
+  answers = {}; sLeft = 3600;
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('ssg').innerHTML = '';
+  document.getElementById('bar-area').innerHTML = '';
+  document.getElementById('test-landing').style.display = 'block';
+  document.getElementById('timer').textContent = '60:00';
+  document.getElementById('timer').classList.remove('warn');
+  document.getElementById('prog-fill').style.width = '0%';
+  document.getElementById('prog-txt').textContent = '0 / 60 done';
+  document.getElementById('sub-btn').style.opacity = '.4';
+  document.getElementById('sub-btn').style.pointerEvents = 'none';
+  for (let i = 0; i < 4; i++) { const p = document.getElementById(`pip${i}`); p.classList.remove('done','active'); if(i===0) p.classList.add('active'); }
+  window.scrollTo({ top: document.getElementById('test').offsetTop - 70, behavior:'smooth' });
+}
+</script>
+</body>
+</html>
